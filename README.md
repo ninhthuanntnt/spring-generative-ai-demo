@@ -14,36 +14,38 @@ Text that we need to input:
 > CustomerController, OrderEntity, OrderRepository, OrderService, OrderController ProductEntity, ProductRepository, 
 > ProductService ProductController. Start from this base package com.ntnt.epam.generative.ai.demo.service. It 
 > include exception package which have a global exception handler and some not found exceptions for entities above. 
-> No need to include main class. Finally, Show me the code structure only
+> It also include mapper package that support to map req to entity using mapstruct. No need to include main class. 
+> Finally, Show me the code structure only
 
 Result:
 ```
-com.ntnt.epam.generative.ai.demo.service
-    ├── controller
-    │   ├── CustomerController.java
-    │   ├── OrderController.java
-    │   └── ProductController.java
-    │   
-    ├── entity
-    │   ├── CustomerEntity.java
-    │   ├── OrderEntity.java
-    │   └── ProductEntity.java
-    │
-    ├── exception
-    │   ├── GlobalExceptionHandler.java
-    │   ├── CustomerNotFoundException.java
-    │   ├── OrderNotFoundException.java
-    │   └── ProductNotFoundException.java
-    │   
-    ├── repository
-    │   ├── CustomerRepository.java
-    │   ├── OrderRepository.java
-    │   └── ProductRepository.java
-    │
-    └── service
-        ├── CustomerService.java
-        ├── OrderService.java
-        └── ProductService.java
+com.ntnt.epam.generative.ai.demo
+├── controller
+│   ├── CustomerController.java
+│   ├── OrderController.java
+│   └── ProductController.java
+├── entity
+│   ├── CustomerEntity.java
+│   ├── OrderEntity.java
+│   └── ProductEntity.java
+├── exception
+│   ├── EntityNotFoundException.java
+│   ├── GlobalExceptionHandler.java
+│   ├── ProductNotFoundException.java
+│   └── CustomerNotFoundException.java
+├── mapper
+│   ├── CustomerMapper.java
+│   ├── OrderMapper.java
+│   └── ProductMapper.java
+├── repository
+│   ├── CustomerRepository.java
+│   ├── OrderRepository.java
+│   └── ProductRepository.java
+└── service
+    ├── CustomerService.java
+    ├── OrderService.java
+    └── ProductService.java
+
 ```
 ### 1.2. Tell ChatGPT to generate Powershell commands to generate this code base
 Text that we need to input:
@@ -96,7 +98,8 @@ New-Item -Name "service\ProductService.java" -ItemType File
 need to declare package in order to have a better result when generating code. After that, we can start to generate 
 code.
 
-
+**Tips:** Select all comment before generating code to make sure that we'll get the best result. (Select from the 
+last line to the first line)
 ### 2.1 Generate code in an Entity class.
 
 - Write a comment under package declaration to show what you want. For example:
@@ -173,5 +176,51 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 - We also need to modify the code to make it look better. And help GitHub Copilot generate better code in the next time.
 
 ### 2.4 Generate code in Controller class.
+- Write a comment under package declaration to show what you want. For example:
+```java
+// Please help me generate CustomerController using spring boot rest controller which has 4 endpoints CRUD
+// and using CustomerService to handle business logic. And using CustomerMapper to map entity to CustomerRes before
+// return.
+```
+- Choose the best result from GitHub Copilot tab.
+- You also need to modify to make the code complete and correct the mistakes.
 
+## 3. Solutions for some other problems.
+### 3.1. Cannot generate flyway migration code in sql files.
+Solution 1: We need to go to specific Entity and write a comment like:
+```java
+//Generate flyway code to init this entity
+```
+And the result:
+```sql
+CREATE TABLE orders (
+   id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+   customer_id BIGINT(20) NOT NULL,
+   customer_name VARCHAR(255) NOT NULL,
+   product_id BIGINT(20) NOT NULL,
+   amount DECIMAL(19,2) NOT NULL,
+   order_date TIMESTAMP NOT NULL,
+   FOREIGN KEY (customer_id) REFERENCES customers (id),
+   FOREIGN KEY (product_id) REFERENCES products (id)
+);
+```
+Solution 2: We can copy that class to ChatGPT and tell it remember this class and tell it to help us generate flyway 
+migration code.
+
+### 3.2. Don't know how to config flyway.
+
+We can ask ChatGPT to help us by writing this message:
+> How to config flyway in spring boot project?
+
+### 3.3. Generate similar class.
+We can write a comment to tell GitHub Copilot to help us generate a class following convention of other class.
+<br/>
+For example we want to generate ProductMapper class:
+```java
+// Please help me to create ProductMapper interface similar with CustomerMapper
+```
+Or we want to generate ProductService class:
+```java
+// Please help me to create product service which has methods similar with CustomerService
+```
 

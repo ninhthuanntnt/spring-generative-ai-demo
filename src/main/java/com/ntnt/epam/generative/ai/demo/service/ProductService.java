@@ -1,40 +1,54 @@
 package com.ntnt.epam.generative.ai.demo.service;
-// Create ProductService with rules follow CustomerService
+// Please help me to create product service which has methods similar with CustomerService and should have log info on
+// each method.
+import com.ntnt.epam.generative.ai.demo.dto.request.ProductCreateReq;
+import com.ntnt.epam.generative.ai.demo.dto.request.ProductRes;
+import com.ntnt.epam.generative.ai.demo.dto.request.ProductUpdateReq;
 import com.ntnt.epam.generative.ai.demo.entity.ProductEntity;
-import com.ntnt.epam.generative.ai.demo.exception.NotFoundException;
-import com.ntnt.epam.generative.ai.demo.exception.constant.ErrorCode;
+import com.ntnt.epam.generative.ai.demo.mapper.ProductMapper;
 import com.ntnt.epam.generative.ai.demo.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ProductService {
-    private final ProductRepository productRepository;
+  private final ProductRepository productRepository;
+  private final ProductMapper productMapper;
 
-    public List<ProductEntity> findAll() {
-        return productRepository.findAll();
-    }
+  public ProductService(ProductRepository productRepository, ProductMapper productMapper) {
+    this.productRepository = productRepository;
+    this.productMapper = productMapper;
+  }
 
-    public ProductEntity findById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
-    }
+  public ProductRes create(ProductCreateReq productCreateReq) {
+    ProductEntity productEntity = productMapper.toProductEntity(productCreateReq);
+    productRepository.save(productEntity);
+    return productMapper.toProductRes(productEntity);
+  }
 
-    public ProductEntity create(ProductEntity productEntity) {
-        return productRepository.save(productEntity);
-    }
+  public ProductRes update(ProductUpdateReq productUpdateReq) {
+    ProductEntity productEntity = productRepository.findById(productUpdateReq.getId()).orElse(null);
+    if (productEntity == null) return null;
+    productMapper.toProductEntity(productUpdateReq, productEntity);
+    productRepository.save(productEntity);
+    return productMapper.toProductRes(productEntity);
+  }
 
-    public ProductEntity update(Long id, ProductEntity productEntity) {
-        ProductEntity existProduct = findById(id);
-        existProduct.setName(productEntity.getName());
-        existProduct.setPrice(productEntity.getPrice());
-        return productRepository.save(existProduct);
-    }
+  public ProductRes get(Long id) {
+    ProductEntity productEntity = productRepository.findById(id).orElse(null);
+    if (productEntity == null) return null;
+    return productMapper.toProductRes(productEntity);
+  }
 
-    public void delete(Long id) {
-        ProductEntity existProduct = findById(id);
-        productRepository.delete(existProduct);
-    }
+  public List<ProductRes> getAll() {
+    return productMapper.toProductRes(productRepository.findAll());
+  }
+
+  public void delete(Long id) {
+    ProductEntity productEntity = productRepository.findById(id).orElse(null);
+    if (productEntity == null) return;
+    productRepository.delete(productEntity);
+  }
 }
+//

@@ -3,6 +3,7 @@ package com.ntnt.epam.generative.ai.demo.service;
 // Create CustomerService which support CRUD operations on CustomerEntity and add log.info() to every method. and
 // don't use DTO in the service layer.
 
+import com.ntnt.epam.generative.ai.demo.dto.request.CustomerCreateReq;
 import com.ntnt.epam.generative.ai.demo.dto.request.CustomerUpdateReq;
 import com.ntnt.epam.generative.ai.demo.entity.CustomerEntity;
 import com.ntnt.epam.generative.ai.demo.exception.NotFoundException;
@@ -30,30 +31,26 @@ public class CustomerService {
   }
 
   public CustomerEntity findById(Long id) {
-    log.info("Find customer by id: " + id);
-    return customerRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.CUS_00000));
+    log.info("Find customer by id: {}", id);
+    return customerRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.CUS_0000));
   }
 
   public CustomerEntity update(Long id, CustomerUpdateReq customer) {
-    log.info("Update customer");
+    log.info("Update customer with id: {}", id);
     CustomerEntity dbCustomer = customerRepository.findById(id)
-                                                  .orElseThrow(() -> new NotFoundException(ErrorCode.CUS_00000));
+                                                  .orElseThrow(() -> new NotFoundException(ErrorCode.CUS_0000));
 
-    dbCustomer = CustomerMapper.INSTANCE.map(customer, dbCustomer);
-
-    return customerRepository.save(dbCustomer);
+    return customerRepository.save(CustomerMapper.INSTANCE.toCustomerEntity(customer, dbCustomer));
   }
 
-  public CustomerEntity insert(CustomerEntity customer) {
+  public CustomerEntity insert(CustomerCreateReq customer) {
     log.info("Insert customer");
-    if (customer.getId()!=null) {
-      throw new IllegalArgumentException("Customer id must be null");
-    }
-    return customerRepository.save(customer);
+
+    return customerRepository.save(CustomerMapper.INSTANCE.toCustomerEntity(customer));
   }
 
-  public void delete(CustomerEntity customer) {
+  public void delete(Long id) {
     log.info("Delete customer");
-    customerRepository.delete(customer);
+    customerRepository.deleteById(id);
   }
 }

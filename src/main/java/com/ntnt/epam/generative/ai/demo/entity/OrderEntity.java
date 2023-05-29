@@ -35,10 +35,10 @@ public class OrderEntity {
   private Instant orderDate;
 
   @ManyToOne
-  @JoinColumn(name = "customer_id")
+  @JoinColumn(name = "customer_id", insertable = false, updatable = false)
   private CustomerEntity customer;
 
   @ManyToOne
-  @JoinColumn(name = "product_id")
+  @JoinColumn(name = "product_id", insertable = false, updatable = false)
   private ProductEntity product;
 }

@@ -1,6 +1,5 @@
-package com.ntnt.epam.generative.ai.demo.dto.request;
+package com.ntnt.epam.generative.ai.demo.dto.response;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CustomerCreateReq {
+public class CustomerRes {
+  private Long id;
   private String name;
   private String address;
   private String phoneNumber;

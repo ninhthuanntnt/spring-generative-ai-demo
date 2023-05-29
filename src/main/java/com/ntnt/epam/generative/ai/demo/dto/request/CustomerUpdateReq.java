@@ -1,9 +1,11 @@
 package com.ntnt.epam.generative.ai.demo.dto.request;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class CustomerUpdateReq {
   private String name;

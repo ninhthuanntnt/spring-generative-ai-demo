@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-  CUS_00000("CUS-0000", "Customer not found"),
-  PROD_00000("CUS-0000", "Product not found");
+  CUS_0000("CUS-0000", "Customer not found"),
+  PROD_0000("PROD-0000", "Product not found");
 
   private final String code;
   private final String message;
